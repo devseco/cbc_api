@@ -9,6 +9,7 @@ class Category {
             });
         })
     }
+
     static async GetCategory(id){
         return new Promise(resolve=>{
             mysql.query('select * from categories where id = ?' , [id], (error , result)=>{
@@ -18,5 +19,6 @@ class Category {
             });
         })
     }
+
 }
 module.exports = Category;

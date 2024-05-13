@@ -1,10 +1,14 @@
 const router_cbc = require('./CBC/routes/Router');
 const router_aqa = require('./AQS/routes/Router'); // تأكد من تصحيح المسار إذا كان مختلفًا
 const express = require("express");
+var compression = require('compression')
+const cors = require("cors");
 const os = require('os');
 const app = express();
-
+app.use(cors())
+app.use(compression())
 app.use(express.json());
+
 const port = process.env.PORT || 3000;
 
 // الحصول على كافة واجهات الشبكة

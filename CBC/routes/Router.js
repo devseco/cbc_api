@@ -4,14 +4,12 @@ const CityController = require('../controllers/Citiescontroller');
 const DiscountController = require('../controllers/Discountcontroller');
 const ProductController = require('../controllers/Productcontroller');
 const SliderController = require('../controllers/Slidercontroller');
+const StoriesController = require('../controllers/StoriesController');
 const Usercontroller = require('../controllers/Usercontroller');
 const { authenticateToken } = require('../middleware/auth');
 const router = require('express').Router();
 const auth = require('../middleware/auth');
 //Auth
-router.get('/', (req, res) => {
-    res.send('Welcome to CBC routes!');
-});
 router.get('/allusers',auth.authenticateToken,Usercontroller.getAllUsers);
 router.post('/addnew',Usercontroller.addnewuser);
 router.post('/login',Usercontroller.login);
@@ -37,6 +35,9 @@ router.get('/getAllCities',CityController.GetCities);
 //discounts
 router.get('/getDiscountrecently',DiscountController.getRecently);
 router.get('/getDiscountHighest',DiscountController.getHighest);
+//Stories
+router.get('/getStories/:cate/:city',StoriesController.GetAllStories);
+router.get('/getStore/:id',StoriesController.GetStoreByID);
 //Highest
 // Exprot
 

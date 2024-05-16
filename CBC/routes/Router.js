@@ -1,4 +1,5 @@
 const Billcontroller = require('../controllers/Billcontroller');
+const CardController = require('../controllers/CardController');
 const Categorycontroller = require('../controllers/Categorycontroller');
 const CityController = require('../controllers/Citiescontroller');
 const DiscountController = require('../controllers/Discountcontroller');
@@ -38,6 +39,8 @@ router.get('/getDiscountHighest',DiscountController.getHighest);
 //Stories
 router.get('/getStories/:cate/:city',StoriesController.GetAllStories);
 router.get('/getStore/:id',StoriesController.GetStoreByID);
+//Card
+router.get('/getCardAbout',CardController.getCardAbout);
 //Highest
 // Exprot
 

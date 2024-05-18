@@ -41,6 +41,8 @@ router.get('/getStories/:cate/:city',StoriesController.GetAllStories);
 router.get('/getStore/:id',StoriesController.GetStoreByID);
 //Card
 router.get('/getCardAbout',CardController.getCardAbout);
+router.get('/getCardType',CardController.getCardType);
+router.get('/getCardSales',CardController.getCardSales);
 //Highest
 // Exprot
 

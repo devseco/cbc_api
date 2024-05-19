@@ -1,3 +1,4 @@
+const AccountController = require('../controllers/AccountController');
 const Billcontroller = require('../controllers/Billcontroller');
 const CardController = require('../controllers/CardController');
 const Categorycontroller = require('../controllers/Categorycontroller');
@@ -43,7 +44,8 @@ router.get('/getStore/:id',StoriesController.GetStoreByID);
 router.get('/getCardAbout',CardController.getCardAbout);
 router.get('/getCardType',CardController.getCardType);
 router.get('/getCardSales',CardController.getCardSales);
-//Highest
+//Account
+router.get('/getAccount/:number',AccountController.GetAccount);
 // Exprot
 
 module.exports = router;

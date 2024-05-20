@@ -1,5 +1,6 @@
 const AccountController = require('../controllers/AccountController');
 const Billcontroller = require('../controllers/Billcontroller');
+const CallCenterController = require('../controllers/CallCenterController');
 const CardController = require('../controllers/CardController');
 const Categorycontroller = require('../controllers/Categorycontroller');
 const CityController = require('../controllers/Citiescontroller');
@@ -46,6 +47,8 @@ router.get('/getCardType',CardController.getCardType);
 router.get('/getCardSales',CardController.getCardSales);
 //Account
 router.get('/getAccount/:number',AccountController.GetAccount);
+//Call Center
+router.get('/getCallCenter',CallCenterController.getCallCenter);
 // Exprot
 
 module.exports = router;

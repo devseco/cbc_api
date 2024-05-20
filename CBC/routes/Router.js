@@ -6,6 +6,7 @@ const Categorycontroller = require('../controllers/Categorycontroller');
 const CityController = require('../controllers/Citiescontroller');
 const DiscountController = require('../controllers/Discountcontroller');
 const ProductController = require('../controllers/Productcontroller');
+const QrController = require('../controllers/QrController');
 const SliderController = require('../controllers/Slidercontroller');
 const StoriesController = require('../controllers/StoriesController');
 const Usercontroller = require('../controllers/Usercontroller');
@@ -49,6 +50,8 @@ router.get('/getCardSales',CardController.getCardSales);
 router.get('/getAccount/:number',AccountController.GetAccount);
 //Call Center
 router.get('/getCallCenter',CallCenterController.getCallCenter);
+//Qr
+router.get('/getQr',QrController.getQr);
 // Exprot
 
 module.exports = router;

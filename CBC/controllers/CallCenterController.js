@@ -5,6 +5,5 @@ class CallCenterController{
         if(result)
         res.send(result)
     }
-
 }
 module.exports = CallCenterController;

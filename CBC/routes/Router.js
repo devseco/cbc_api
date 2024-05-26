@@ -42,6 +42,7 @@ router.get('/getDiscountHighest',DiscountController.getHighest);
 //Stories
 router.get('/getStories/:cate/:city',StoriesController.GetAllStories);
 router.get('/getStore/:id',StoriesController.GetStoreByID);
+router.get('/getAllStories',StoriesController.GetStoreByID);
 //Card
 router.get('/getCardAbout',CardController.getCardAbout);
 router.get('/getCardType',CardController.getCardType);

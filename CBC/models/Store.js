@@ -3,22 +3,45 @@ const mysql = require('../config/db');
 class Store {
     static GetAllStories(cate, city) {
         return new Promise((resolve, reject) => {
-            const query = `
+            const storiesQuery = `
                 SELECT stories.*, discount.discount AS discountCount
                 FROM stories 
                 LEFT JOIN discount ON stories.id = discount.storeId 
                 WHERE stories.category = ? AND stories.city = ? 
                 GROUP BY stories.id`;
-                
-            mysql.query(query, [cate, city], (error, results) => {
+            
+            const imagesQuery = `
+                SELECT image 
+                FROM images_category 
+                WHERE categoryid = ?`;
+    
+            mysql.query(storiesQuery, [cate, city], (error, storiesResults) => {
                 if (error) {
                     reject(error);
-                } else {
-                    resolve(results);
+                    return;
                 }
+    
+                mysql.query(imagesQuery, [cate], (error, imagesResults) => {
+                    if (error) {
+                        reject(error);
+                        return;
+                    }
+    
+                    // Extract image URLs from the imagesResults
+                    const images = imagesResults.map(imageRecord => imageRecord.image);
+    
+                    // Construct the final result structure
+                    const result = {
+                        stories: storiesResults,
+                        Ads: images
+                    };
+    
+                    resolve(result);
+                });
             });
         });
     }
+    
     //get by id
     static GetStoreByID(id) {
         return new Promise((resolve, reject) => {

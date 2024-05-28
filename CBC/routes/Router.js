@@ -13,6 +13,23 @@ const Usercontroller = require('../controllers/Usercontroller');
 const { authenticateToken } = require('../middleware/auth');
 const router = require('express').Router();
 const auth = require('../middleware/auth');
+const multer = require('multer');
+const path = require('path');
+const fs = require('fs');
+//uploadimage
+const storage = multer.diskStorage({
+    destination: (req, file, cb) => {
+      const uploadDir = 'uploads/';
+      if (!fs.existsSync(uploadDir)) {
+        fs.mkdirSync(uploadDir);
+      }
+      cb(null, uploadDir);
+    },
+    filename: (req, file, cb) => {
+      cb(null, Date.now() + path.extname(file.originalname));
+    }
+  });
+  const upload = multer({ storage: storage });
 //Auth
 router.get('/allusers',auth.authenticateToken,Usercontroller.getAllUsers);
 router.post('/addnew',Usercontroller.addnewuser);
@@ -39,6 +56,7 @@ router.get('/getAllCities',CityController.GetCities);
 //discounts
 router.get('/getDiscountrecently',DiscountController.getRecently);
 router.get('/getDiscountHighest',DiscountController.getHighest);
+
 //Stories
 router.get('/getStories/:cate/:city',StoriesController.GetAllStories);
 router.get('/getStore/:id',StoriesController.GetStoreByID);
@@ -53,6 +71,51 @@ router.get('/getAccount/:number',AccountController.GetAccount);
 router.get('/getCallCenter',CallCenterController.getCallCenter);
 //Qr
 router.get('/getQr',QrController.getQr);
+
+
+//Dash Routers
+//Get All stories
+router.get('/Dash/getAllStories',StoriesController.DashGetAllStories);
+router.post('/Dash/addStore', upload.fields([
+    { name: 'logo', maxCount: 1 },
+    { name: 'images', maxCount: 10 },
+    { name: 'offers', maxCount: 5 },
+    { name: 'ads', maxCount: 2 },
+  ]), async (req, res, next) => {
+    try {
+      // الصورة الأساسية
+      const logoUrl = req.files['logo']
+        ? `http://127.0.0.1:3000/uploads/${req.files['logo'][0].filename}`
+        : null;
+      // الصور الثانوية
+      const imagesUrls = req.files['images']
+        ? req.files['images'].map(file => `http://127.0.0.1:3000/uploads/${file.filename}`)
+        : [];
+        const offersUrls = req.files['offers']
+        ? req.files['offers'].map(file => `http://127.0.0.1:3000/uploads/${file.filename}`)
+        : [];
+        const adsUrls = req.files['ads']
+        ? req.files['ads'].map(file => `http://127.0.0.1:3000/uploads/${file.filename}`)
+        : [];
+  
+      // استدعاء دالة إضافة المنتج مع الصور الأساسية والثانوية
+      await StoriesController.addStore(req,res,next, logoUrl,imagesUrls ,offersUrls , adsUrls );
+  
+    } catch (error) {
+      next(error);
+    }
+  });
+
+
+  //Discounts
+  router.get('/Dash/getAllDescounts',DiscountController.getAll);
+
+
+
+
+
 // Exprot
+
+
 
 module.exports = router;

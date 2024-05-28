@@ -10,5 +10,6 @@ class Categorycontroller{
         if(result)
         res.send(result)
     }
+    
 }
 module.exports = Categorycontroller;

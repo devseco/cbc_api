@@ -30,7 +30,7 @@ for (let interface of Object.keys(networkInterfaces)) {
 
 app.use('/cbc/api/v1/', router_cbc);
 app.use('/aqs/api/v1/', router_aqa);
-
+app.use('/uploads', express.static('uploads'));
 app.listen(port, () => {
     console.log(`Running with ip ${ip}:${port}`);
 });

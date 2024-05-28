@@ -1,10 +1,76 @@
 const mysql = require('../config/db');
 
 class Store {
+
+    static async addStore(name, logo, description, name_kur, category, city, facebook, instagram, telegram, whatsapp, images, offers, ads, branches) {
+        return new Promise((resolve, reject) => {
+            const storeQuery = 'INSERT INTO stories (name, logo, description, name_kur, category, city, active, facebook, instagram, telegram, whatsapp) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)';
+            mysql.query(storeQuery, [name, logo, description, name_kur, category, city, 1, facebook, instagram, telegram, whatsapp], (error, storeResult) => {
+                if (error) {
+                    return reject(error);
+                }
+                const storeId = storeResult.insertId;
+    
+                const imagesQuery = 'INSERT INTO stories_images (storeid, image) VALUES ?';
+                const imagesData = images.map(url => [storeId, url]);
+                mysql.query(imagesQuery, [imagesData], (imagesError) => {
+                    if (imagesError) {
+                        return reject(imagesError);
+                    }
+    
+                    const offersQuery = 'INSERT INTO stories_offers (storeid, image) VALUES ?';
+                    const offersData = offers.map(url => [storeId, url]);
+                    mysql.query(offersQuery, [offersData], (offersError) => {
+                        if (offersError) {
+                            return reject(offersError);
+                        }
+    
+                        const adsQuery = 'INSERT INTO stories_sliders (storeid, image) VALUES ?';
+                        const adsData = ads.map(url => [storeId, url]);
+                        mysql.query(adsQuery, [adsData], (adsError) => {
+                            if (adsError) {
+                                return reject(adsError);
+                            }
+    
+                            const branchesQuery = 'INSERT INTO branches (title, storeid, phone, location, active) VALUES ?';
+    
+                            console.log('Branches:', branches);
+                            console.log('Type of branches:', typeof branches);
+    
+                            let parsedBranches;
+    
+                            try {
+                                parsedBranches = JSON.parse(branches);
+                            } catch (error) {
+                                return reject('Error parsing branches JSON: ' + error.message);
+                            }
+    
+                            if (!Array.isArray(parsedBranches)) {
+                                return reject('Branches data is not an array.');
+                            }
+    
+                            const branchesData = parsedBranches.map(branch => [branch.title, storeId, branch.phone, branch.location, 1]);
+    
+                            mysql.query(branchesQuery, [branchesData], (branchesError) => {
+                                if (branchesError) {
+                                    return reject(branchesError);
+                                }
+    
+                                resolve('Store and related data added successfully');
+                            });
+                        });
+                    });
+                });
+            });
+        });
+    }
+    
+
+
     static GetAllStories(cate, city) {
         return new Promise((resolve, reject) => {
             const storiesQuery = `
-                SELECT stories.*, discount.discount AS discountCount
+                SELECT stories.*, IFNULL(discount.discount, 0) AS discountCount
                 FROM stories 
                 LEFT JOIN discount ON stories.id = discount.storeId 
                 WHERE stories.category = ? AND stories.city = ? 
@@ -41,6 +107,26 @@ class Store {
             });
         });
     }
+    
+    static async DashGetAllStories(req, res, next) {
+        return new Promise(resolve => {
+            const query = `
+                SELECT stories.*, categories.title AS category_name, cities.title AS city_name
+                FROM stories
+                JOIN categories ON stories.category = categories.id
+                JOIN cities ON stories.city = cities.id
+            `;
+            mysql.query(query, [], (error, result) => {
+                if (!error) {
+                    resolve(result);
+                } else {
+                    // يمكنك إضافة معالجة الخطأ هنا
+                    console.error(error);
+                }
+            });
+        });
+    }
+    
     
     //get by id
     static GetStoreByID(id) {
@@ -160,12 +246,13 @@ class Store {
                         });
                     } else {
                         // إذا لم يتم العثور على متجر مع الهوية المعطاة، نقوم بإرسال رسالة خطأ
-                        resolve('Store not found');
+                        resolve(null);
                     }
                 }
             });
         });
     }
+   
 }
 
 module.exports = Store;

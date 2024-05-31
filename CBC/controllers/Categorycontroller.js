@@ -10,6 +10,15 @@ class Categorycontroller{
         if(result)
         res.send(result)
     }
+    static async AddGategory(req,res,next , imageUrl ){
+        var title  = req.body.title;
+        var city  = req.body.city;
+        
+
+        const result = await Category.addCategory(title , imageUrl , city);
+        if(result)
+        res.send(result)
+    }
     
 }
 module.exports = Categorycontroller;

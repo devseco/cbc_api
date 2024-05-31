@@ -17,5 +17,13 @@ class DiscountController{
         if(result)
         res.send(result)
     }
+    static async addDiscount(req,res,next){
+        var id = req.body.id;
+        var title = req.body.title;
+        var discount = req.body.discount;
+        const result = await Discount.AddDiscount(id , title , discount);
+        if(result)
+        res.send(result)
+    }
 }
 module.exports = DiscountController;

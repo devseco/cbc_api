@@ -9,5 +9,17 @@ class City {
             });
         })
     }
+    static async addCity(title, image ) {
+        return new Promise((resolve) => {
+            const query = 'INSERT INTO cities (title, image  , active) VALUES (? , ? , 1)';
+            mysql.query(query, [title, image], (error, result) => {
+                if (!error) {
+                    resolve('تمت الاضافة بنجاح');
+                }else{
+                    resolve(error);
+                }
+            });
+        });
+    }
 }
 module.exports = City;

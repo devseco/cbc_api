@@ -5,5 +5,11 @@ class CityController{
         if(result)
         res.send(result)
     }
+    static async AddCity(req,res,next , imageUrl ){
+        var title  = req.body.title;
+        const result = await City.addCity(title , imageUrl);
+        if(result)
+        res.send(result)
+    }
 }
 module.exports = CityController;

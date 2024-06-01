@@ -179,7 +179,39 @@ router.post('/Dash/addDoing',CardController.addDoing);
 router.post('/Dash/addType',CardController.addType);
 //Card Offer
 router.post('/Dash/addOffer',CardController.addOffer);
+//Card Image
+router.post('/Dash/uploadFront', upload.single('file'), async (req, res, next) => {
+  try {
+      // Handle file upload logic
+      const imageUrl = `http://127.0.0.1:3000/uploads/${req.file.filename}`;
 
+      // Check if the uploaded file is an image
+      if (!req.file || !req.file.mimetype.startsWith('image/')) {
+          return res.status(400).json({ error: 'Only image files are allowed.' });
+      }
+      // Call the addCategory function
+      await CardController.uploadFront(req, res, next, imageUrl);
+  } catch (error) {
+      // Handle any errors
+      next(error); // Pass the error to the error-handling middleware
+  }
+});
+router.post('/Dash/uploadBack', upload.single('file'), async (req, res, next) => {
+  try {
+      // Handle file upload logic
+      const imageUrl = `http://127.0.0.1:3000/uploads/${req.file.filename}`;
+
+      // Check if the uploaded file is an image
+      if (!req.file || !req.file.mimetype.startsWith('image/')) {
+          return res.status(400).json({ error: 'Only image files are allowed.' });
+      }
+      // Call the addCategory function
+      await CardController.uploadBack(req, res, next, imageUrl);
+  } catch (error) {
+      // Handle any errors
+      next(error); // Pass the error to the error-handling middleware
+  }
+});
 // Exprot
 
 

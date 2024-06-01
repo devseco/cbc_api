@@ -21,6 +21,7 @@ class CardController{
         if(result)
         res.send(result)
     }
+    
 
 
 
@@ -56,6 +57,16 @@ class CardController{
         var phone = req.body.phone;
         var city = req.body.city;
         const result = await Card.addSales(name,phone,city, image);
+        if(result)
+        res.send(result)
+    }
+    static async uploadFront(req,res,next,image){
+        const result = await Card.uploadFront(image);
+        if(result)
+        res.send(result)
+    }
+    static async uploadBack(req,res,next,image){
+        const result = await Card.uploadBack(image);
         if(result)
         res.send(result)
     }

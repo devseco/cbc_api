@@ -60,6 +60,30 @@ class Card {
             });
         });
     }
+    static async uploadFront(image) {
+        return new Promise((resolve) => {
+            const query = 'UPDATE card_about SET image_front = ?';
+            mysql.query(query, [image], (error, result) => {
+                if (!error) {
+                    resolve('تم الحفظ بنجاح');
+                }else{
+                    resolve(error);
+                }
+            });
+        });
+    }
+    static async uploadBack(image) {
+        return new Promise((resolve) => {
+            const query = 'UPDATE card_about SET image_back = ?';
+            mysql.query(query, [image], (error, result) => {
+                if (!error) {
+                    resolve('تم الحفظ بنجاح');
+                }else{
+                    resolve(error);
+                }
+            });
+        });
+    }
 
 
 

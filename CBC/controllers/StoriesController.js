@@ -37,7 +37,12 @@ class StoriesController {
         }
     }
   
-    
+    static async FilterStories(req , res , next){
+        const name = req.params.name;
+        const result = await Store.searchStore(name);
+        if(result)
+        res.send(result)
+    }
     
  
 }

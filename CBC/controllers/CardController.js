@@ -22,10 +22,6 @@ class CardController{
         res.send(result)
     }
     
-
-
-
-    //
     static async addFeatures(req,res,next){
         var title = req.body.title;
         const result = await Card.addFeatures(title);

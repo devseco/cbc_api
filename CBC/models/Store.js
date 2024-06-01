@@ -252,6 +252,25 @@ class Store {
             });
         });
     }
+    static searchStore(name) {
+        return new Promise((resolve, reject) => {
+          const query = 'SELECT * FROM stories WHERE name LIKE ? ORDER BY id DESC';
+          mysql.query(query, ['%' + name + '%'], (error, results) => {
+            if (!error) {
+              // تحويل النتائج إلى الشكل المطلوب
+              const formattedResults = results.map((item) => {
+                return {
+                  'label': item.name, 
+                  'value': item.id   
+                };
+              });
+              resolve(formattedResults);
+            } else {
+              reject(error); // يجب التعامل مع الخطأ بشكل مناسب
+            }
+          });
+        });
+      }  
    
 }
 

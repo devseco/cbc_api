@@ -56,7 +56,6 @@ router.get('/getAllCities',CityController.GetCities);
 //discounts
 router.get('/getDiscountrecently',DiscountController.getRecently);
 router.get('/getDiscountHighest',DiscountController.getHighest);
-
 //Stories
 router.get('/getStories/:cate/:city',StoriesController.GetAllStories);
 router.get('/getStore/:id',StoriesController.GetStoreByID);
@@ -153,7 +152,33 @@ router.post('/Dash/addStore', upload.fields([
     }
 });
 
+//Card Sales
+router.get('/Dash/getSales',CardController.getAllCardSales);
+router.post('/Dash/addSales', upload.single('file'), async (req, res, next) => {
+  try {
+      // Handle file upload logic
+      const imageUrl = `http://127.0.0.1:3000/uploads/${req.file.filename}`;
 
+      // Check if the uploaded file is an image
+      if (!req.file || !req.file.mimetype.startsWith('image/')) {
+          return res.status(400).json({ error: 'Only image files are allowed.' });
+      }
+
+      // Call the addCategory function
+      await CardController.addSales(req, res, next, imageUrl);
+  } catch (error) {
+      // Handle any errors
+      next(error); // Pass the error to the error-handling middleware
+  }
+});
+//Card Features
+router.post('/Dash/addFeatures',CardController.addFeatures);
+//Card Doing
+router.post('/Dash/addDoing',CardController.addDoing);
+//Card Type
+router.post('/Dash/addType',CardController.addType);
+//Card Offer
+router.post('/Dash/addOffer',CardController.addOffer);
 
 // Exprot
 

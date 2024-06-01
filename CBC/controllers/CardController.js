@@ -16,6 +16,49 @@ class CardController{
         if(result)
         res.send(result)
     }
+    static async getAllCardSales(req,res,next){
+        const result = await Card.GetAllSales();
+        if(result)
+        res.send(result)
+    }
+
+
+
+    //
+    static async addFeatures(req,res,next){
+        var title = req.body.title;
+        const result = await Card.addFeatures(title);
+        if(result)
+        res.send(result)
+    }
+    static async addDoing(req,res,next){
+        var title = req.body.title;
+        const result = await Card.addDoing(title);
+        if(result)
+        res.send(result)
+    }
+    static async addType(req,res,next){
+        var title = req.body.title;
+        var price = req.body.price;
+        const result = await Card.addType(title,price);
+        if(result)
+        res.send(result)
+    }
+    static async addOffer(req,res,next){
+        var title = req.body.title;
+        var price = req.body.price;
+        const result = await Card.addOffer(title,price);
+        if(result)
+        res.send(result)
+    }
+    static async addSales(req,res,next , image){
+        var name = req.body.name;
+        var phone = req.body.phone;
+        var city = req.body.city;
+        const result = await Card.addSales(name,phone,city, image);
+        if(result)
+        res.send(result)
+    }
 
 }
 module.exports = CardController;

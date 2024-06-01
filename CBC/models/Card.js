@@ -1,5 +1,80 @@
 const mysql = require('../config/db')
 class Card {
+    static async addFeatures(title) {
+        return new Promise((resolve) => {
+            const query = 'INSERT INTO card_features (title) VALUES (?)';
+            mysql.query(query, [title], (error, result) => {
+                if (!error) {
+                    resolve('تمت الاضافة بنجاح');
+                }else{
+                    resolve(error);
+                }
+            });
+        });
+    }
+    static async addDoing(title) {
+        return new Promise((resolve) => {
+            const query = 'INSERT INTO card_doing (title) VALUES (?)';
+            mysql.query(query, [title], (error, result) => {
+                if (!error) {
+                    resolve('تمت الاضافة بنجاح');
+                }else{
+                    resolve(error);
+                }
+            });
+        });
+    }
+    static async addType(title , price) {
+        return new Promise((resolve) => {
+            const query = 'INSERT INTO card_types (type , price) VALUES (? , ?)';
+            mysql.query(query, [title , price], (error, result) => {
+                if (!error) {
+                    resolve('تمت الاضافة بنجاح');
+                }else{
+                    resolve(error);
+                }
+            });
+        });
+    }
+    static async addOffer(title , price) {
+        return new Promise((resolve) => {
+            const query = 'INSERT INTO card_offers (title , price) VALUES (? , ?)';
+            mysql.query(query, [title , price], (error, result) => {
+                if (!error) {
+                    resolve('تمت الاضافة بنجاح');
+                }else{
+                    resolve(error);
+                }
+            });
+        });
+    }
+    static async addSales(name , phone , city , image) {
+        return new Promise((resolve) => {
+            const query = 'INSERT INTO card_sales (name , phone , city_id , image) VALUES (? , ? , ? , ?)';
+            mysql.query(query, [name , phone , city , image], (error, result) => {
+                if (!error) {
+                    resolve('تمت الاضافة بنجاح');
+                }else{
+                    resolve(error);
+                }
+            });
+        });
+    }
+
+
+
+    static async GetAllSales(){
+        return new Promise(resolve=>{
+            mysql.query('SELECT card_sales.*, cities.title AS city_title FROM card_sales JOIN cities ON card_sales.city_id = cities.id', [], (error, result)=>{
+                if(!error){
+                    resolve(result);
+                }
+            });
+        })
+    }
+
+
+
     static async getAboutCard() {
         return new Promise(resolve => {
             mysql.query('select * from card_about', [], (error1, result1) => {

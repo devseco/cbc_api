@@ -271,6 +271,93 @@ class Store {
           });
         });
       }  
+
+
+      static GetByFilter(cate, city, orderby) {
+        return new Promise((resolve, reject) => {
+            let orderByClause = '';
+            if(orderby == 1){
+                orderByClause = 'ORDER BY stories.id DESC';
+            }else if(orderby == 2){
+                orderByClause = 'ORDER BY stories.id ASC';
+            }else if(orderby == 3){
+                orderByClause = 'ORDER BY discountCount DESC';
+            }else if(orderby == 4){
+                orderByClause = 'ORDER BY discountCount ASC';
+            }
+           
+            const storiesQuery = 'SELECT stories.*, IFNULL(discount.discount, 0) AS discountCount FROM stories LEFT JOIN discount ON stories.id = discount.storeId WHERE stories.category = ? AND stories.city = ? ' + orderByClause;
+
+            const imagesQuery = `
+                SELECT image 
+                FROM images_category 
+                WHERE categoryid = ?`;
+    
+            console.log('Executing storiesQuery:', storiesQuery); // اختبار: طباعة الاستعلام للتأكد منه
+        
+            mysql.query(storiesQuery, [cate, city], (error, storiesResults) => {
+                if (error) {
+                    reject(error);
+                    return;
+                }
+    
+                console.log('Stories Results:', storiesResults); // اختبار: طباعة النتائج للتأكد من صحة الترتيب
+    
+                mysql.query(imagesQuery, [cate], (error, imagesResults) => {
+                    if (error) {
+                        reject(error);
+                        return;
+                    }
+    
+                    // Extract image URLs from the imagesResults
+                    const images = imagesResults.map(imageRecord => imageRecord.image);
+    
+                    // Construct the final result structure
+                    const result = {
+                        stories: storiesResults,
+                        Ads: images
+                    };
+    
+                    resolve(result);
+                });
+            });
+        });
+    }
+    
+    static GetByFilterAllStories(orderby , city) {
+        return new Promise((resolve, reject) => {
+            let orderByClause = '';
+            let orderByCity = '';
+            if(orderby == 1){
+                orderByClause = ' ORDER BY stories.id DESC';
+            }else if(orderby == 2){
+                orderByClause = ' ORDER BY stories.id ASC';
+            }else if(orderby == 3){
+                orderByClause = ' ORDER BY discountCount DESC';
+            }else if(orderby == 4){
+                orderByClause = ' ORDER BY discountCount ASC';
+            }
+            if(city > 0){
+                orderByCity = ' where city = ' + city;
+            }else{
+                orderByCity = '';
+            }
+                
+            const storiesQuery = 'SELECT stories.*, IFNULL(discount.discount, 0) AS discountCount FROM stories LEFT JOIN discount ON stories.id = discount.storeId ' + orderByCity + orderByClause;
+            
+            mysql.query(storiesQuery, [], (error, storiesResults) => {
+                if (error) {
+                    reject(error);
+                    return;
+                }
+                console.log('Stories Results:', storiesResults); // اختبار: طباعة النتائج للتأكد من صحة الترتيب
+                const result = storiesResults;
+                resolve(result);
+            });
+        });
+    }
+    
+      
    
 }
 

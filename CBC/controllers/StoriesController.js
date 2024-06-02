@@ -43,7 +43,22 @@ class StoriesController {
         if(result)
         res.send(result)
     }
-    
+
+    static async filterStoriesBy(req , res , next){
+        const cate = req.params.cate;
+        const city = req.params.city;
+        const orderby = req.params.orderby;
+        const result = await Store.GetByFilter(cate , city , orderby);
+        if(result)
+        res.send(result)
+    }
+    static async filterAllStories(req , res , next){
+        const orderby = req.params.orderby;
+        const city = req.params.city;
+        const result = await Store.GetByFilterAllStories(orderby , city);
+        if(result)
+        res.send(result)
+    }
  
 }
 module.exports = StoriesController;

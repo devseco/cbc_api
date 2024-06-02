@@ -61,6 +61,8 @@ router.get('/getStories/:cate/:city',StoriesController.GetAllStories);
 router.get('/getStore/:id',StoriesController.GetStoreByID);
 router.get('/getAllStories',StoriesController.GetStoreByID);
 router.get('/filterStories/:name',StoriesController.FilterStories);
+router.get('/getStoriesBy/:cate/:city/:orderby',StoriesController.filterStoriesBy);
+router.get('/getAllStoriesBy/:orderby/:city',StoriesController.filterAllStories);
 //Card
 router.get('/getCardAbout',CardController.getCardAbout);
 router.get('/getCardType',CardController.getCardType);

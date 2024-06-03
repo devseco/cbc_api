@@ -1,7 +1,5 @@
 const mysql = require('../config/db');
-
 class Store {
-
     static async addStore(name, logo, description, name_kur, category, city, facebook, instagram, telegram, whatsapp, images, offers, ads, branches) {
         return new Promise((resolve, reject) => {
             const storeQuery = 'INSERT INTO stories (name, logo, description, name_kur, category, city, active, facebook, instagram, telegram, whatsapp) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)';
@@ -10,30 +8,25 @@ class Store {
                     return reject(error);
                 }
                 const storeId = storeResult.insertId;
-    
                 const imagesQuery = 'INSERT INTO stories_images (storeid, image) VALUES ?';
                 const imagesData = images.map(url => [storeId, url]);
                 mysql.query(imagesQuery, [imagesData], (imagesError) => {
                     if (imagesError) {
                         return reject(imagesError);
                     }
-    
                     const offersQuery = 'INSERT INTO stories_offers (storeid, image) VALUES ?';
                     const offersData = offers.map(url => [storeId, url]);
                     mysql.query(offersQuery, [offersData], (offersError) => {
                         if (offersError) {
                             return reject(offersError);
                         }
-    
                         const adsQuery = 'INSERT INTO stories_sliders (storeid, image) VALUES ?';
                         const adsData = ads.map(url => [storeId, url]);
                         mysql.query(adsQuery, [adsData], (adsError) => {
                             if (adsError) {
                                 return reject(adsError);
                             }
-    
                             const branchesQuery = 'INSERT INTO branches (title, storeid, phone, location, active) VALUES ?';
-    
                             console.log('Branches:', branches);
                             console.log('Type of branches:', typeof branches);
     

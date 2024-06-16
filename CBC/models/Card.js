@@ -171,5 +171,87 @@ class Card {
             });
         });
     }
+
+
+
+    //Delete
+    static async DeleteFeatures(id) {   
+        return new Promise(resolve => {
+          const query = `DELETE FROM card_features WHERE id = ?`;
+          mysql.query(query, [id], (error, result) => {
+              if (!error) {
+                  resolve('تم الحذف بنجاح');
+              } else {
+                  console.error(error);
+              }
+          });
+      });
+  }
+
+  static async DeleteOffer(id) {   
+    return new Promise(resolve => {
+      const query = `DELETE FROM card_offers WHERE id = ?`;
+      mysql.query(query, [id], (error, result) => {
+          if (!error) {
+              resolve('تم الحذف بنجاح');
+          } else {
+              console.error(error);
+          }
+      });
+  });
+}
+
+static async DeleteDoing(id) {   
+    return new Promise(resolve => {
+      const query = `DELETE FROM card_doing WHERE id = ?`;
+      mysql.query(query, [id], (error, result) => {
+          if (!error) {
+              resolve('تم الحذف بنجاح');
+          } else {
+              console.error(error);
+          }
+      });
+  });
+}
+
+static async DeleteType(id) {   
+    return new Promise(resolve => {
+      const query = `DELETE FROM card_types WHERE id = ?`;
+      mysql.query(query, [id], (error, result) => {
+          if (!error) {
+              resolve('تم الحذف بنجاح');
+          } else {
+              console.error(error);
+          }
+      });
+  });
+}
+
+static async DeleteType(id) {   
+    return new Promise(resolve => {
+      const query = `DELETE FROM card_types WHERE id = ?`;
+      mysql.query(query, [id], (error, result) => {
+          if (!error) {
+              resolve('تم الحذف بنجاح');
+          } else {
+              console.error(error);
+          }
+      });
+  });
+}
+
+static async DeleteSales(id) {   
+    return new Promise(resolve => {
+      const query = `DELETE FROM card_sales WHERE id = ?`;
+      mysql.query(query, [id], (error, result) => {
+          if (!error) {
+              resolve('تم الحذف بنجاح');
+          } else {
+              console.error(error);
+          }
+      });
+  });
+}
+
 }
 module.exports = Card;

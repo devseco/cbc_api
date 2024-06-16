@@ -4,7 +4,7 @@ const db = mysql.createPool({
  host:"localhost",
  user:'root',
  password:'',
- database:'cbcDB'
+ database:'aqsDB'
 });
 db.getConnection(()=>{
 console.log("Connect Db is Successfully ..");

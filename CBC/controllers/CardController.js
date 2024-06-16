@@ -67,5 +67,41 @@ class CardController{
         res.send(result)
     }
 
+//delete
+static async DeleteFeatures(req , res , next){
+    const id = req.params.id;
+    const result = await Card.DeleteFeatures(id);
+    if(result)
+    res.send(result)
+}
+static async DeleteDoing(req , res , next){
+    const id = req.params.id;
+    const result = await Card.DeleteDoing(id);
+    if(result)
+    res.send(result)
+}
+static async DeleteType(req , res , next){
+    const id = req.params.id;
+    const result = await Card.DeleteType(id);
+    if(result)
+    res.send(result)
+}
+static async DeleteOffer(req , res , next){
+    const id = req.params.id;
+    const result = await Card.DeleteOffer(id);
+    if(result)
+    res.send(result)
+}
+static async DeleteSales(req , res , next){
+    const id = req.params.id;
+    const result = await Card.DeleteSales(id);
+    if(result)
+    res.send(result)
+}
+
+
+
+
+
 }
 module.exports = CardController;

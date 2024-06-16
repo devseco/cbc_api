@@ -1,59 +1,150 @@
 const mysql = require('../config/db');
 class Store {
-    static async addStore(name, logo, description, name_kur, category, city, facebook, instagram, telegram, whatsapp, images, offers, ads, branches) {
+
+    static async DashUploadAds(id,image) {
+        return new Promise((resolve) => {
+            const query = 'INSERT INTO stories_sliders (storeid, image) VALUES (?,?)';
+            mysql.query(query, [id, image ], (error, result) => {
+                if (!error) {
+                    resolve('تم رفع الصورة بنجاح');
+                }else{
+                    resolve(error);
+                }
+            });
+        });
+    }
+
+    static async DashUploadOffers(id,image) {
+        return new Promise((resolve) => {
+            const query = 'INSERT INTO stories_offers (storeid, image) VALUES (?,?)';
+            mysql.query(query, [id, image ], (error, result) => {
+                if (!error) {
+                    resolve('تم رفع الصورة بنجاح');
+                }else{
+                    resolve(error);
+                }
+            });
+        });
+    }
+
+    static async DashUploadImages(id,image) {
+        return new Promise((resolve) => {
+            const query = 'INSERT INTO stories_images (storeid, image) VALUES (?,?)';
+            mysql.query(query, [id, image ], (error, result) => {
+                if (!error) {
+                    resolve('تم رفع الصورة بنجاح');
+                }else{
+                    resolve(error);
+                }
+            });
+        });
+    }
+
+    static async DashAddBranches(id , title , phone , location) {   
+        return new Promise(resolve => {
+          const query = `INSERT INTO branches (title, storeid, phone, location, active) VALUES (?,?,?,?,?)`;
+          mysql.query(query, [title , id , phone , location , 1 ], (error, result) => {
+              if (!error) {
+                  resolve('تمت الاضافة بنجاح');
+              } else {
+                  console.error(error);
+              }
+          });
+      });
+  }
+
+    static async DashUpdateStore(id, name, description, name_kur, category, city, facebook, instagram, telegram, whatsapp) {   
+        return new Promise(resolve => {
+            const query = `
+                UPDATE stories
+                SET name = ?, description = ?, name_kur = ?, category = ?, city = ?, facebook = ?, instagram = ?, telegram = ?, whatsapp = ?
+                WHERE id = ?
+            `;
+            mysql.query(query, [name,description, name_kur, category, city, facebook, instagram, telegram, whatsapp, id], (error, result) => {
+                if (!error) {
+                    resolve('update successfully');
+                } else {
+                    console.error(error);
+                }
+            });
+        });
+    }
+
+    static async addStore(name, logo, description, name_kur, category, city, facebook, instagram, telegram, whatsapp, images, offers, ads, branches , discounts) {
         return new Promise((resolve, reject) => {
             const storeQuery = 'INSERT INTO stories (name, logo, description, name_kur, category, city, active, facebook, instagram, telegram, whatsapp) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)';
             mysql.query(storeQuery, [name, logo, description, name_kur, category, city, 1, facebook, instagram, telegram, whatsapp], (error, storeResult) => {
                 if (error) {
                     return reject(error);
-                }
+                }                
                 const storeId = storeResult.insertId;
+
+                const DiscountQuery = 'INSERT INTO discount (store,discount,image,storeId,title) VALUES ?';
+                let parsedDiscount;
+                try {
+                    parsedDiscount = JSON.parse(discounts);
+                } catch (error) {
+                    return reject('Error parsing branches JSON: ' + error.message);
+                }
+                if (!Array.isArray(parsedDiscount)) {
+                    return reject('Branches data is not an array.');
+                }
+                const discountData = parsedDiscount.map(discount => [name, discount.discount, logo, storeId , discount.title]);
+
+                mysql.query(DiscountQuery, [discountData], (discountError) => {
+                    if (discountError) {
+                        return reject(discountError);
+                    }
+
+    });
+
+
+
+                
                 const imagesQuery = 'INSERT INTO stories_images (storeid, image) VALUES ?';
                 const imagesData = images.map(url => [storeId, url]);
                 mysql.query(imagesQuery, [imagesData], (imagesError) => {
                     if (imagesError) {
                         return reject(imagesError);
                     }
-                    const offersQuery = 'INSERT INTO stories_offers (storeid, image) VALUES ?';
-                    const offersData = offers.map(url => [storeId, url]);
-                    mysql.query(offersQuery, [offersData], (offersError) => {
-                        if (offersError) {
-                            return reject(offersError);
-                        }
-                        const adsQuery = 'INSERT INTO stories_sliders (storeid, image) VALUES ?';
-                        const adsData = ads.map(url => [storeId, url]);
-                        mysql.query(adsQuery, [adsData], (adsError) => {
-                            if (adsError) {
-                                return reject(adsError);
-                            }
-                            const branchesQuery = 'INSERT INTO branches (title, storeid, phone, location, active) VALUES ?';
-                            console.log('Branches:', branches);
-                            console.log('Type of branches:', typeof branches);
-    
+                   
+                    });
+                    
+                    const branchesQuery = 'INSERT INTO branches (title, storeid, phone, location, active) VALUES ?';
                             let parsedBranches;
-    
                             try {
                                 parsedBranches = JSON.parse(branches);
                             } catch (error) {
                                 return reject('Error parsing branches JSON: ' + error.message);
                             }
-    
                             if (!Array.isArray(parsedBranches)) {
                                 return reject('Branches data is not an array.');
                             }
-    
                             const branchesData = parsedBranches.map(branch => [branch.title, storeId, branch.phone, branch.location, 1]);
     
                             mysql.query(branchesQuery, [branchesData], (branchesError) => {
                                 if (branchesError) {
                                     return reject(branchesError);
                                 }
-    
-                                resolve('Store and related data added successfully');
-                            });
-                        });
-                    });
+
                 });
+                const offersQuery = 'INSERT INTO stories_offers (storeid, image) VALUES ?';
+                const offersData = offers.map(url => [storeId, url]);
+                mysql.query(offersQuery, [offersData], (offersError) => {
+                    if (offersError) {
+                        return reject(offersError);
+                    }
+                    });
+
+               const adsQuery = 'INSERT INTO stories_sliders (storeid, image) VALUES ?';
+               const adsData = ads.map(url => [storeId, url]);
+                    mysql.query(adsQuery, [adsData], (adsError) => {
+                        if (adsError) {
+                            return reject(adsError);
+                        }
+                        });              
+
+                resolve('Store and related data added successfully');
             });
         });
     }
@@ -63,9 +154,7 @@ class Store {
     static GetAllStories(cate, city) {
         return new Promise((resolve, reject) => {
             const storiesQuery = `
-                SELECT stories.*, IFNULL(discount.discount, 0) AS discountCount
-                FROM stories 
-                LEFT JOIN discount ON stories.id = discount.storeId 
+            SELECT stories.*, IFNULL((SELECT MAX(IFNULL(discount, 0)) FROM discount WHERE storeId = stories.id), 0) AS discountCount FROM stories 
                 WHERE stories.category = ? AND stories.city = ? 
                 GROUP BY stories.id`;
             
@@ -125,15 +214,14 @@ class Store {
     static GetStoreByID(id) {
         return new Promise((resolve, reject) => {
             const query = `
-            SELECT stories.*, stories_sliders.image, categories.title AS categoryName
+            SELECT stories.*, categories.title AS categoryName
             FROM stories
-            INNER JOIN stories_sliders ON stories.id = stories_sliders.storeid
             INNER JOIN categories ON stories.category = categories.id
             WHERE stories.id = ?;
             `;
             mysql.query(query, [id], (error, storeResults) => {
                 if (error) {
-                    reject(error);
+                    resolve(error);
                 } else {
                     if (storeResults.length > 0) {
                         const storeData = {
@@ -155,40 +243,62 @@ class Store {
                                 sliders: []
                             }
                         };
-
+    
                         // تنظيم الصور في مصفوفة داخل الكائن
                         storeResults.forEach(result => {
                             storeData.storeinfo.sliders.push(result.image);
                         });
-
+    
                         const branchesQuery = `
                         SELECT title, phone, location
                         FROM branches
                         WHERE storeid = ?
-                      `;
-                      mysql.query(branchesQuery, [id], (error, branchesResults) => {
-                        if (error) {
-                          reject(error);
-                        } else {
-                          storeData.storeinfo.branches = [];
-                          branchesResults.forEach(branchResult => {
-                            storeData.storeinfo.branches.push({
-                              title: branchResult.title,
-                              phone: branchResult.phone,
-                              location: branchResult.location
-                            });
-                          });
-                        }
-                      });
+                        `;
+                        mysql.query(branchesQuery, [id], (error, branchesResults) => {
+                            if (error) {
+                                reject(error);
+                            } else {
+                                storeData.storeinfo.branches = [];
+                                branchesResults.forEach(branchResult => {
+                                    storeData.storeinfo.branches.push({
+                                        title: branchResult.title,
+                                        phone: branchResult.phone,
+                                        location: branchResult.location
+                                    });
+                                });
+                            }
+                        });
 
+
+                        //
+                        const slidersQuery = `
+                        SELECT image
+                        FROM stories_sliders
+                        WHERE storeid = ?
+                    `;
+
+                    mysql.query(slidersQuery, [id], (error, slidersResults) => {
+                        if (error) {
+                            reject(error);
+                        } else {
+                            storeData.storeinfo.sliders = [];
+                            slidersResults.forEach(sliderResult => {
+                                storeData.storeinfo.sliders.push(sliderResult.image);
+                            });
+                        }
+                    });
+
+                             
+
+    
                         // الآن سنقوم بجلب بيانات الصور من جدول "stories_images" ودمجها مع storeinfo
                         const imageQuery = `
                             SELECT image
                             FROM stories_images
                             WHERE storeid = ?
                         `;
-
-                        
+    
+    
                         mysql.query(imageQuery, [id], (error, imageResults) => {
                             if (error) {
                                 reject(error);
@@ -197,7 +307,7 @@ class Store {
                                 imageResults.forEach(imageResult => {
                                     storeData.storeinfo.images.push(imageResult.image);
                                 });
-
+    
                                 // الآن سنقوم بجلب بيانات العروض من جدول "stories_offers" ودمجها مع storeinfo
                                 const offerQuery = `
                                     SELECT image
@@ -232,14 +342,14 @@ class Store {
                                                 resolve(storeData);
                                             }
                                         });
-                                        
+    
                                     }
                                 });
                             }
                         });
                     } else {
                         // إذا لم يتم العثور على متجر مع الهوية المعطاة، نقوم بإرسال رسالة خطأ
-                        resolve(null);
+                        resolve(query);
                     }
                 }
             });
@@ -279,7 +389,7 @@ class Store {
                 orderByClause = 'ORDER BY discountCount ASC';
             }
            
-            const storiesQuery = 'SELECT stories.*, IFNULL(discount.discount, 0) AS discountCount FROM stories LEFT JOIN discount ON stories.id = discount.storeId WHERE stories.category = ? AND stories.city = ? ' + orderByClause;
+            const storiesQuery = 'SELECT stories.*, IFNULL((SELECT MAX(IFNULL(discount, 0)) FROM discount WHERE storeId = stories.id), 0) AS discountCount FROM stories WHERE stories.category = ? AND stories.city = ? ' + orderByClause;
 
             const imagesQuery = `
                 SELECT image 
@@ -293,8 +403,6 @@ class Store {
                     reject(error);
                     return;
                 }
-    
-                console.log('Stories Results:', storiesResults); // اختبار: طباعة النتائج للتأكد من صحة الترتيب
     
                 mysql.query(imagesQuery, [cate], (error, imagesResults) => {
                     if (error) {
@@ -322,13 +430,13 @@ class Store {
             let orderByClause = '';
             let orderByCity = '';
             if(orderby == 1){
-                orderByClause = ' ORDER BY stories.id DESC';
+                orderByClause = ' ORDER BY stories.id DESC ';
             }else if(orderby == 2){
-                orderByClause = ' ORDER BY stories.id ASC';
+                orderByClause = ' ORDER BY stories.id ASC ';
             }else if(orderby == 3){
-                orderByClause = ' ORDER BY discountCount DESC';
+                orderByClause = ' ORDER BY discountCount DESC ';
             }else if(orderby == 4){
-                orderByClause = ' ORDER BY discountCount ASC';
+                orderByClause = ' ORDER BY discountCount ASC ';
             }
             if(city > 0){
                 orderByCity = ' where city = ' + city;
@@ -336,22 +444,72 @@ class Store {
                 orderByCity = '';
             }
                 
-            const storiesQuery = 'SELECT stories.*, IFNULL(discount.discount, 0) AS discountCount FROM stories LEFT JOIN discount ON stories.id = discount.storeId ' + orderByCity + orderByClause;
+            const storiesQuery = 'SELECT stories.*, IFNULL((SELECT MAX(IFNULL(discount, 0)) FROM discount WHERE storeId = stories.id), 0) AS discountCount FROM stories   ' + orderByCity + orderByClause;
             
             mysql.query(storiesQuery, [], (error, storiesResults) => {
                 if (error) {
                     reject(error);
                     return;
                 }
-                console.log('Stories Results:', storiesResults); // اختبار: طباعة النتائج للتأكد من صحة الترتيب
                 const result = storiesResults;
                 resolve(result);
             });
         });
     }
     
-      
-   
+    static async DashDeleteStore(id) {   
+          return new Promise(resolve => {
+            const query = `DELETE FROM stories WHERE id = ?`;
+            mysql.query(query, [id], (error, result) => {
+                if (!error) {
+                    resolve('تم الحذف بنجاح');
+                } else {
+                    console.error(error);
+                }
+            });
+        });
+    }
+    static async DashDeleteAds(id , image ) {   
+        return new Promise(resolve => {
+          const query = `DELETE FROM stories_sliders WHERE image = ? AND storeid = ?`;
+          mysql.query(query, [image , id], (error, result) => {
+              if (!error) {
+                  resolve('تم الحذف بنجاح');
+              } else {
+                  console.error(error);
+              }
+          });
+      });
+  }
+
+    //DashDeleteOffers
+    static async DashDeleteOffers(id , image ) {   
+        return new Promise(resolve => {
+          const query = `DELETE FROM stories_offers WHERE image = ? AND storeid = ?`;
+          mysql.query(query, [image , id], (error, result) => {
+              if (!error) {
+                  resolve('تم الحذف بنجاح');
+              } else {
+                  console.error(error);
+              }
+          });
+      });
+  }
+
+    static async DashDeleteImages(id , image ) {   
+        return new Promise(resolve => {
+          const query = `DELETE FROM stories_images WHERE image = ? AND storeid = ?`;
+          mysql.query(query, [image , id], (error, result) => {
+              if (!error) {
+                  resolve('تم الحذف بنجاح');
+              } else {
+                  console.error(error);
+              }
+          });
+      });
+  }
+
+
 }
 
 module.exports = Store;
